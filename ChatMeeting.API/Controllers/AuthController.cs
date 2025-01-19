@@ -1,4 +1,5 @@
-﻿using ChatMeeting.Core.Domain.Interfaces.Repositories;
+﻿using ChatMeeting.Core.Domain.Dtos;
+using ChatMeeting.Core.Domain.Interfaces.Repositories;
 using ChatMeeting.Core.Domain.Interfaces.Services;
 using ChatMeeting.Core.Domain.Models;
 using Microsoft.AspNetCore.Http;
@@ -12,21 +13,31 @@ namespace ChatMeeting.API.Controllers
     {
 
         private readonly IAuthService _authService;
-
-        public AuthController(IAuthService authService)
+        private readonly ILogger<AuthController> _logger;
+        public AuthController(IAuthService authService, ILogger<AuthController> logger)
         {
             _authService = authService;
+            _logger = logger;
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetUser()
+        [HttpPut("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterUserDTO registerUser)
         {
-            await _authService.RegisterUser(new Core.Domain.Dtos.RegisterUserDTO()
+            try
             {
-                Username = "testtest1234",
-                Password = "password"
-            });
-            return Json("");
+                await _authService.RegisterUser(registerUser);
+                return Ok(new { message = "User registered succesfully" });
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Conflict(new { message = ex.Message });
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, $"An error occured during registration of user: {registerUser.Username}");
+                return StatusCode(500, "An unexpected error occured during registration");
+            }
         }
     }
 }

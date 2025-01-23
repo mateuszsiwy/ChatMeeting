@@ -3,6 +3,7 @@ using ChatMeeting.Core.Domain.Interfaces.Repositories;
 using ChatMeeting.Core.Domain.Interfaces.Services;
 using ChatMeeting.Core.Domain.Models;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -17,17 +18,66 @@ namespace ChatMeeting.Core.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly ILogger<AuthService> _logger;
-        public AuthService(IUserRepository userRepository, ILogger<AuthService> logger)
+        private readonly IJwtService _jwtService;
+        public AuthService(IUserRepository userRepository, ILogger<AuthService> logger, IJwtService jwtService)
         {
             _userRepository = userRepository;
             _logger = logger;
+            _jwtService = jwtService;
+        }
+
+        public async Task<AuthDTO> GetToken(LoginDTO loginModel)
+        {
+            try
+            {
+                var user = await _userRepository.GetUserByLogin(loginModel.Username);
+
+                if (user == null)
+                {
+                    _logger.LogWarning($"User not found: {loginModel.Username}");
+                    throw new InvalidOperationException("User with this login does not exits");
+                }
+
+                if (VerifyPassowrd(loginModel.Password, user.Password))
+                {
+                    var authData = _jwtService.GenerateJwtToken(user);
+
+                    return authData;
+                }
+                else
+                {
+                    throw new UnauthorizedAccessException("Invalid Credentials");
+                }
+
+            } catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Authentication failed for user {loginModel.Username}");
+                throw;
+            }
+
+
+        }
+
+        private bool VerifyPassowrd(string enteredPassword, string storedPassword)
+        {
+            var parts = storedPassword.Split(':');
+            if(parts.Length != 2)
+            {
+                throw new FormatException("Unexpected hash format, should be: hash:password");
+            }
+            var salt = Convert.FromBase64String(parts[0]);
+            var storedHashedPassword = parts[1];
+
+            var enteredHashedPassword = Hash(enteredPassword, salt);
+
+            return enteredHashedPassword == storedHashedPassword;
         }
 
         public async Task RegisterUser(RegisterUserDTO user)
         {
             try
             {
-                var existingUser = await _userRepository.GetUserBylogin(user.Username);
+                var existingUser = await _userRepository.GetUserByLogin(user.Username);
                 if (existingUser != null)
                 {
                     _logger.LogWarning($"User with login {user.Username} already exists");

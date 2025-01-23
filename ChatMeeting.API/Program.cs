@@ -2,6 +2,7 @@
 using ChatMeeting.API.Extensions;
 using ChatMeeting.Core.Domain;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -15,6 +16,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddConfiguration(configuration);
 builder.Services.AddServices();
+builder.Services.AddOptions(configuration);
 
 var origin = configuration.GetValue<string>("Origin") ?? throw new NullReferenceException("Empty origin");
 builder.Services.AddCors(options => options.AddPolicy("CorsPolicy",
@@ -26,6 +28,14 @@ builder.Services.AddCors(options => options.AddPolicy("CorsPolicy",
         .SetIsOriginAllowed((host) => true)
         .AllowCredentials();
     }));
+
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day) 
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
 
 var app = builder.Build();
 

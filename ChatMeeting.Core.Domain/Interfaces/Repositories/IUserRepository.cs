@@ -11,6 +11,6 @@ namespace ChatMeeting.Core.Domain.Interfaces.Repositories
     {
         Task AddUser(User user);
         Task<User?> GetUserById(Guid id);
-        Task<User?> GetUserBylogin(string login);
+        Task<User?> GetUserByLogin(string login);
     }
 }

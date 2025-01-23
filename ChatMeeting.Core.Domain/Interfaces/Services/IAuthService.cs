@@ -9,6 +9,7 @@ namespace ChatMeeting.Core.Domain.Interfaces.Services
 {
     public interface IAuthService
     {
+        Task<AuthDTO> GetToken(LoginDTO loginModel);
         Task RegisterUser(RegisterUserDTO user);
     }
 }

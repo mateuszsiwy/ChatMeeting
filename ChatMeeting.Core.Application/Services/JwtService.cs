@@ -1,4 +1,5 @@
 ﻿using ChatMeeting.Core.Domain.Dtos;
+using ChatMeeting.Core.Domain.Interfaces.Services;
 using ChatMeeting.Core.Domain.Models;
 using ChatMeeting.Core.Domain.Options;
 using Microsoft.Extensions.Options;
@@ -13,13 +14,22 @@ using System.Threading.Tasks;
 
 namespace ChatMeeting.Core.Application.Services
 {
-    public class JwtService
+    public class JwtService : IJwtService
     {
         private readonly JwtSettingsOptions _jwtSettingsOptions;
 
         public JwtService(IOptions<JwtSettingsOptions> jwtSettingsOptions)
         {
             _jwtSettingsOptions = jwtSettingsOptions.Value;
+            if (string.IsNullOrWhiteSpace(_jwtSettingsOptions.SecretKey))
+            {
+                throw new ArgumentException("JWT SecretKey is not configured.");
+            }
+            if (_jwtSettingsOptions.ExpiryInMinutes <= 0)
+            {
+                throw new ArgumentException("JWT ExpiryInMinutes must be greater than 0.");
+            }
+
         }
 
         public AuthDTO GenerateJwtToken(User user)

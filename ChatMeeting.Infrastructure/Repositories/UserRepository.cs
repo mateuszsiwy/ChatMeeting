@@ -52,7 +52,7 @@ namespace ChatMeeting.Infrastructure.Repositories
             }
         }
 
-        public async Task<User?> GetUserBylogin(string login)
+        public async Task<User?> GetUserByLogin(string login)
         {
             try
             {

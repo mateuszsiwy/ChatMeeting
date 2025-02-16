@@ -67,7 +67,9 @@ namespace ChatMeeting.API.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IChatRepository, ChatRepository>();
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IChatService, ChatService>();
             services.AddTransient<IJwtService, JwtService>();
             return services;
         }

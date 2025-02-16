@@ -11,6 +11,7 @@ namespace ChatMeeting.Core.Application.Services
     public class UserConnectionService
     {
         private readonly ConcurrentDictionary<string, string> _userConnections = new ConcurrentDictionary<string, string>();
+
         public void AddConnection(string username, string connectionId)
         {
             if (!string.IsNullOrEmpty(username))

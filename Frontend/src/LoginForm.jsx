@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 
 const handleSubmit = async (e) => {
+
     e.preventDefault();
     var password = document.getElementById('password').value;
     var username = document.getElementById('username').value;
@@ -20,6 +21,7 @@ const handleSubmit = async (e) => {
             const object = await response.json();
             const token = object.token;
             localStorage.setItem("token", token);
+            localStorage.setItem("username", username);
         }
         else {
             alert("Niepowodzenie")

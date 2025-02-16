@@ -1,11 +1,13 @@
 ﻿using ChatMeeting.Core.Domain.Exceptions;
 using ChatMeeting.Core.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatMeeting.API.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
+    [Authorize]
     public class ChatController : Controller
     {
 

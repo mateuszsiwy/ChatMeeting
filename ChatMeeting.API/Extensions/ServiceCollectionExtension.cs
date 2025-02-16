@@ -48,7 +48,25 @@ namespace ChatMeeting.API.Extensions
             {
                 options.SaveToken = true;
                 options.TokenValidationParameters = GetTokenValidationParams(key);
+                options.Events = GetEvents();
             });
+        }
+
+        private static JwtBearerEvents GetEvents()
+        {
+            return new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["token"];
+                    var path = context.Request.Path;
+                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/messageHub"))
+                    {
+                        context.Token = accessToken;
+                    }
+                    return Task.CompletedTask;
+                }
+            };
         }
 
         private static TokenValidationParameters GetTokenValidationParams(byte[] key)
@@ -71,6 +89,8 @@ namespace ChatMeeting.API.Extensions
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IChatService, ChatService>();
             services.AddTransient<IJwtService, JwtService>();
+            services.AddSingleton(new UserConnectionService());
+            services.AddSignalR();
             return services;
         }
     }

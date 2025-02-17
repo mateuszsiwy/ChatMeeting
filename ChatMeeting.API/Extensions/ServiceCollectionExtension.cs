@@ -26,6 +26,7 @@ namespace ChatMeeting.API.Extensions
         public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<JwtSettingsOptions>(options => configuration.GetSection(nameof(JwtSettingsOptions)).Bind(options));
+            services.Configure<KafkaOptions>(options => configuration.GetSection(nameof(KafkaOptions)).Bind(options));
             return services;
         }
 

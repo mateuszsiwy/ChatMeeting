@@ -11,7 +11,6 @@ The backend follows **Onion Architecture**, ensuring a clean separation of conce
 - **Architecture:** Onion Architecture, SOLID Principles
 - **Message Streaming:** Apache Kafka (Docker)
 - **Database:** SQL Server (Azure)
-- **Containerization:** Docker
 
 ## Features
 - ✅ Real-time chat with SignalR  

@@ -1,8 +1,10 @@
 ﻿using ChatMeeting.Core.Application.Services;
 using ChatMeeting.Core.Domain;
+using ChatMeeting.Core.Domain.Interfaces.Producer;
 using ChatMeeting.Core.Domain.Interfaces.Repositories;
 using ChatMeeting.Core.Domain.Interfaces.Services;
 using ChatMeeting.Core.Domain.Options;
+using ChatMeeting.Infrastructure.Producer;
 using ChatMeeting.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -91,6 +93,7 @@ namespace ChatMeeting.API.Extensions
             services.AddTransient<IChatService, ChatService>();
             services.AddTransient<IJwtService, JwtService>();
             services.AddSingleton(new UserConnectionService());
+            services.AddTransient<IKafkaProducer, KafkaProducer>();
             services.AddSignalR();
             return services;
         }

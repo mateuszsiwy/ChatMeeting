@@ -1,6 +1,8 @@
 ﻿using ChatMeeting.Core.Domain.Consts;
+using ChatMeeting.Core.Domain.Interfaces.Producer;
 using ChatMeeting.Core.Domain.Options;
 using Confluent.Kafka;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Concurrent;
@@ -11,10 +13,11 @@ using System.Threading.Tasks;
 
 namespace ChatMeeting.Infrastructure.Producer
 {
-    public class KafkaProducer
+    public class KafkaProducer : IKafkaProducer
     {
         private readonly IProducer<string, string> _producer;
-        public KafkaProducer(IOptions<KafkaOptions> options)
+        private readonly ILogger<KafkaProducer> _logger;
+        public KafkaProducer(IOptions<KafkaOptions> options, ILogger<KafkaProducer> logger)
         {
             var kafkaSetting = options.Value;
 
@@ -26,6 +29,7 @@ namespace ChatMeeting.Infrastructure.Producer
             };
 
             _producer = new ProducerBuilder<string, string>(config).Build();
+            _logger = logger;
         }
 
         public async Task Producer(string topic, Message<string, string> message)
@@ -35,7 +39,8 @@ namespace ChatMeeting.Infrastructure.Producer
                 await _producer.ProduceAsync(topic, message);
             }catch (Exception ex)
             {
-
+                _logger.LogError($"System got an error during sending a message on topic: {topic}");
+                throw;
             }
         }
 

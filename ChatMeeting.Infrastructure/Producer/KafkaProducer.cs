@@ -32,7 +32,7 @@ namespace ChatMeeting.Infrastructure.Producer
             _logger = logger;
         }
 
-        public async Task Producer(string topic, Message<string, string> message)
+        public async Task Produce(string topic, Message<string, string> message)
         {
             try
             {

@@ -1,12 +1,16 @@
-﻿using ChatMeeting.Core.Domain.Dtos;
+﻿using ChatMeeting.Core.Domain.Consts;
+using ChatMeeting.Core.Domain.Dtos;
+using ChatMeeting.Core.Domain.Interfaces.Producer;
 using ChatMeeting.Core.Domain.Interfaces.Repositories;
 using ChatMeeting.Core.Domain.Interfaces.Services;
 using ChatMeeting.Core.Domain.Models;
+using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ChatMeeting.Core.Application.Services
@@ -15,10 +19,12 @@ namespace ChatMeeting.Core.Application.Services
     {
         private readonly IChatRepository _chatRepository;
         private readonly ILogger<ChatService> _logger;
-        public ChatService(IChatRepository chatRepository, ILogger<ChatService> logger)
+        private readonly IKafkaProducer _kafkaProducer;
+        public ChatService(IChatRepository chatRepository, ILogger<ChatService> logger, IKafkaProducer kafkaProducer)
         {
             _chatRepository = chatRepository;
             _logger = logger;
+            _kafkaProducer = kafkaProducer;
         }
 
         public async Task<ChatDTO> GetPaginatedChat(string chatName, int pageNumber, int pageSize)
@@ -27,6 +33,16 @@ namespace ChatMeeting.Core.Application.Services
             var chatDto = ConvertToChatDTO(chat);   
             
             return chatDto;
+        }
+
+        public async Task SaveMessage(MessageDTO messageDTO)
+        {
+            await _kafkaProducer.Produce(TopicKafka.Message, new Message<string, string>
+            {
+                Key = messageDTO.MessageId.ToString(),
+                Value = JsonSerializer.Serialize(messageDTO)
+            });
+
         }
 
         private ChatDTO ConvertToChatDTO(Chat chat)

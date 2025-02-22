@@ -9,6 +9,6 @@ namespace ChatMeeting.Core.Domain.Interfaces.Producer
 {
     public interface IKafkaProducer
     {
-        Task Producer(string topic, Message<string, string> message);
+        Task Produce(string topic, Message<string, string> message);
     }
 }

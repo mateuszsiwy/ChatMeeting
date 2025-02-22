@@ -1,4 +1,6 @@
 ﻿using ChatMeeting.Core.Application.Services;
+using ChatMeeting.Core.Domain.Dtos;
+using ChatMeeting.Core.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,12 +12,14 @@ namespace ChatMeeting.API.Hubs
     public class MessageHub : Hub
     {
         private readonly UserConnectionService _userConnectionService;
+        private readonly IChatService _chatService;
         private string _username => _userConnectionService.GetClaimValue(Context.User, ClaimTypes.NameIdentifier);
         private string _userId => _userConnectionService.GetClaimValue(Context.User, JwtRegisteredClaimNames.Jti);
         private const string _mainChat = "Global";
-        public MessageHub(UserConnectionService userConnectionService)
+        public MessageHub(UserConnectionService userConnectionService, IChatService chatService)
         {
             _userConnectionService = userConnectionService;
+            _chatService = chatService;
         }
 
         public override async Task OnConnectedAsync()
@@ -35,6 +39,19 @@ namespace ChatMeeting.API.Hubs
         public async Task SendMessageToChat(string chatId, string message)
         {
             await Clients.Group(_mainChat).SendAsync("ReceiveMessage", _username, message);
+            var messageDTO = CreateMessage(chatId, message);
+            await _chatService.SaveMessage(messageDTO);
+        }
+
+        private MessageDTO CreateMessage(string chatId, string message)
+        {
+            return new MessageDTO
+            {
+                ChatId = Guid.Parse(chatId),
+                MessageText = message,
+                Sender = _username
+
+            }
         }
 
         private async Task JoinChat(string chatName)

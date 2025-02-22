@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatMeeting.API", "ChatMeeting.API.csproj", "{E429954C-BB48-4951-BB0A-EF41245DCB31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatMeeting.API", "ChatMeeting.API.csproj", "{E429954C-BB48-4951-BB0A-EF41245DCB31}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatMeeting.Core.Domain", "..\ChatMeeting.Core.Domain\ChatMeeting.Core.Domain.csproj", "{9995977D-1213-4130-B249-DEE5D7258D5E}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatMeeting.Core.Application", "..\ChatMeeting.Core.Application\ChatMeeting.Core.Application.csproj", "{1174CD7E-B5A7-4B13-9001-56D404872A99}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "frontend", "..\Frontend\frontend.esproj", "{A4199089-9E4F-4C73-B556-FBDD09375788}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatMeeting.MessageBroker", "..\ChatMeeting.MessageBroker\ChatMeeting.MessageBroker.csproj", "{2647B7F5-0A72-4934-A082-9160A0A0019F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{A4199089-9E4F-4C73-B556-FBDD09375788}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4199089-9E4F-4C73-B556-FBDD09375788}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A4199089-9E4F-4C73-B556-FBDD09375788}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{2647B7F5-0A72-4934-A082-9160A0A0019F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2647B7F5-0A72-4934-A082-9160A0A0019F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2647B7F5-0A72-4934-A082-9160A0A0019F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2647B7F5-0A72-4934-A082-9160A0A0019F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

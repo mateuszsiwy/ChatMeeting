@@ -49,9 +49,9 @@ namespace ChatMeeting.API.Hubs
             {
                 ChatId = Guid.Parse(chatId),
                 MessageText = message,
-                Sender = _username
-
-            }
+                Sender = _username,
+                SenderId = Guid.Parse(_userId)
+            };
         }
 
         private async Task JoinChat(string chatName)

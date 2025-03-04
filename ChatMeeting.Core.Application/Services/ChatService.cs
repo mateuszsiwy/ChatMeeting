@@ -57,6 +57,7 @@ namespace ChatMeeting.Core.Application.Services
                     {
                         MessageId = x.MessageId,
                         Sender = x.Sender.Username,
+                        SenderId = x.SenderId,
                         MessageText = x.MessageText,
                         CreatedAt = x.CreatedAt
 
